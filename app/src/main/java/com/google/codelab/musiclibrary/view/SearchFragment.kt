@@ -45,6 +45,7 @@ class SearchFragment : Fragment() {
             songTestData.clear()
             while (i <= 20) {
                 val song = Song(
+                    rank = null,
                     name = "kirari",
                     artist = "Fujii Kaze",
                     image = R.drawable.kirari
