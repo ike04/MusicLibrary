@@ -10,6 +10,7 @@ import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
 import com.google.codelab.musiclibrary.model.Artist
 import com.google.codelab.musiclibrary.model.Song
+import com.google.codelab.musiclibrary.util.ShareUtils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.OnItemClickListener
@@ -42,21 +43,14 @@ class SearchFragment : Fragment() {
                 // ToDo: 画面遷移の処理をかく
             }
 
-        groupAdapter.update(songList.map { SearchItemFactory(it) { position ->
-            share(songList[position])
-        } })
+        groupAdapter.update(songList.map {
+            SearchItemFactory(it) { position ->
+                val sendIntent = ShareUtils.share(songList[position])
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
+            }
+        })
         groupAdapter.setOnItemClickListener(onItemClickListener)
-    }
-
-    fun share(song: Song){
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "${song.name}を共有する。")
-            type = "text/plain"
-        }
-
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        startActivity(shareIntent)
     }
 
     companion object {
