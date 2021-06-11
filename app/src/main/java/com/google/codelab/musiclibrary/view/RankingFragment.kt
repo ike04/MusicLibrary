@@ -8,15 +8,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
+import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
 import com.google.codelab.musiclibrary.model.Song
 import com.google.codelab.musiclibrary.util.ShareUtils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.OnItemClickListener
 
 class RankingFragment : Fragment() {
     private lateinit var binding: FragmentRankingBinding
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val songList: MutableList<Song> = createSongTestData()
+    private val onItemClickListener = OnItemClickListener { item, _ ->
+        // どのitemがクリックされたかindexを取得
+        val index = groupAdapter.getAdapterPosition(item)
+        DetailWebViewFragment.newInstance(songList[index].url).showFragment(parentFragmentManager)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +46,7 @@ class RankingFragment : Fragment() {
                 startActivity(shareIntent)
             }
         })
+        groupAdapter.setOnItemClickListener(onItemClickListener)
     }
 
     companion object {
@@ -51,7 +59,8 @@ class RankingFragment : Fragment() {
                     rank = i + 1,
                     name = "kirari",
                     artist = "Fujii Kaze",
-                    image = R.drawable.kirari
+                    image = R.drawable.kirari,
+                    url = "https://www.shazam.com/track/567600879/kirari"
                 )
                 songTestData.add(song)
                 i++

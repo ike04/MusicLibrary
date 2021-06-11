@@ -4,5 +4,6 @@ data class Song(
     val rank: Int?,
     val name: String,
     val artist: String,
-    val image: Int
+    val image: Int,
+    val url: String
 )

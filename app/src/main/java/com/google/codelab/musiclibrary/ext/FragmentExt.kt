@@ -8,6 +8,7 @@ object FragmentExt {
     fun Fragment.showFragment(fragmentManager: FragmentManager){
         fragmentManager.beginTransaction()
             .replace(R.id.content_view,this)
+            .addToBackStack(null)
             .commit()
     }
 }

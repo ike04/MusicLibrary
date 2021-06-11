@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
+import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
 import com.google.codelab.musiclibrary.model.Artist
 import com.google.codelab.musiclibrary.model.Song
 import com.google.codelab.musiclibrary.util.ShareUtils
@@ -22,7 +23,7 @@ class SearchFragment : Fragment() {
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
         val index = groupAdapter.getAdapterPosition(item)
-
+        DetailWebViewFragment.newInstance(songList[index].url).showFragment(parentFragmentManager)
     }
 
     override fun onCreateView(
@@ -64,7 +65,8 @@ class SearchFragment : Fragment() {
                     rank = null,
                     name = "kirari",
                     artist = "Fujii Kaze",
-                    image = R.drawable.kirari
+                    image = R.drawable.kirari,
+                    url = "https://www.shazam.com/track/567600879/kirari"
                 )
                 songTestData.add(song)
                 i++
