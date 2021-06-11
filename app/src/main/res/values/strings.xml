@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MusicLibrary</string>
+    <string name="navigation_search">Search</string>
+    <string name="navigation_ranking">Ranking</string>
 </resources>
