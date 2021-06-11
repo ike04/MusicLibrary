@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.view
 
+import android.content.Intent
 import android.icu.text.CaseMap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.xwray.groupie.GroupieViewHolder
 class RankingFragment : Fragment() {
     private lateinit var binding: FragmentRankingBinding
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
+    private val songList: MutableList<Song> = createSongTestData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +32,20 @@ class RankingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.rankingRecyclerView.adapter = groupAdapter
-        groupAdapter.update(createSongTestData().map { RankingItemFactory(it) })
+        groupAdapter.update(songList.map { RankingItemFactory(it){ position ->
+            share(songList[position])
+        } })
+    }
+
+    fun share(song: Song){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "${song.name}を共有する。")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     companion object {

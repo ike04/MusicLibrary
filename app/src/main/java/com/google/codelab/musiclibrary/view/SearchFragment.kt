@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +12,17 @@ import com.google.codelab.musiclibrary.model.Artist
 import com.google.codelab.musiclibrary.model.Song
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.OnItemClickListener
 
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
+    private val songList: MutableList<Song> = createSongTestData()
+    private val onItemClickListener = OnItemClickListener { item, _ ->
+        // どのitemがクリックされたかindexを取得
+        val index = groupAdapter.getAdapterPosition(item)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +42,21 @@ class SearchFragment : Fragment() {
                 // ToDo: 画面遷移の処理をかく
             }
 
-        groupAdapter.update(createSongTestData().map { SearchItemFactory(it) })
+        groupAdapter.update(songList.map { SearchItemFactory(it) { position ->
+            share(songList[position])
+        } })
+        groupAdapter.setOnItemClickListener(onItemClickListener)
+    }
+
+    fun share(song: Song){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "${song.name}を共有する。")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     companion object {

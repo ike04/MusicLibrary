@@ -5,7 +5,7 @@ import com.google.codelab.musiclibrary.databinding.CellRankingSongBinding
 import com.google.codelab.musiclibrary.model.Song
 import com.xwray.groupie.databinding.BindableItem
 
-class RankingItemFactory(private val song: Song) : BindableItem<CellRankingSongBinding>() {
+class RankingItemFactory(private val song: Song, private val onShareClick: (Int) -> Unit) : BindableItem<CellRankingSongBinding>() {
     override fun getLayout(): Int = R.layout.cell_ranking_song
 
     override fun bind(viewBinding: CellRankingSongBinding, position: Int) {
@@ -13,5 +13,9 @@ class RankingItemFactory(private val song: Song) : BindableItem<CellRankingSongB
         viewBinding.imageView.setImageResource(song.image)
         viewBinding.artistName.text = song.artist
         viewBinding.songName.text = song.name
+
+        viewBinding.share.setOnClickListener {
+            onShareClick(position)
+        }
     }
 }
