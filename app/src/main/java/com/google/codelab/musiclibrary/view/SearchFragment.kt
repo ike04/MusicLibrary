@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
+import com.google.codelab.musiclibrary.model.Artist
 import com.google.codelab.musiclibrary.model.Song
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -28,25 +29,44 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
+        binding.viewPager.searchResultArtist.adapter =
+            PagerArtistFactory(createArtistTestData().map { it }) {
+                // ToDo: 画面遷移の処理をかく
+            }
 
-        groupAdapter.update(createTestData().map { SearchItemFactory(it) })
+        groupAdapter.update(createSongTestData().map { SearchItemFactory(it) })
     }
 
     companion object {
-        private val testData: MutableList<Song> = ArrayList()
-        fun createTestData(): MutableList<Song> {
+        private val songTestData: MutableList<Song> = ArrayList()
+        private val artistTestData: MutableList<Artist> = ArrayList()
+        fun createSongTestData(): MutableList<Song> {
             var i = 0
-            testData.clear()
+            songTestData.clear()
             while (i <= 20) {
                 val song = Song(
                     name = "kirari",
                     artist = "Fujii Kaze",
                     image = R.drawable.kirari
                 )
-                testData.add(song)
+                songTestData.add(song)
                 i++
             }
-            return testData
+            return songTestData
+        }
+
+        fun createArtistTestData(): MutableList<Artist> {
+            var j = 0
+            artistTestData.clear()
+            while (j <= 4) {
+                val artist = Artist(
+                    name = "Aimyon",
+                    image = R.drawable.kirari
+                )
+                artistTestData.add(artist)
+                j++
+            }
+            return artistTestData
         }
     }
 
