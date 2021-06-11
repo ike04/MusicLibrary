@@ -33,7 +33,7 @@ class PagerViewHolder(val binding: CellSearchArtistBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(artist: Artist) {
-        binding.pagerArtistImage.setImageResource(R.drawable.kirari)
+        binding.pagerArtistImage.setImageResource(R.drawable.aimyon)
         binding.pagerArtistName.text = artist.name
     }
 }
