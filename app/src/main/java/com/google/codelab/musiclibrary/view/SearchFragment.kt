@@ -20,6 +20,7 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val songList: MutableList<Song> = createSongTestData()
+    private val artistList: MutableList<Artist> = createArtistTestData()
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
         val index = groupAdapter.getAdapterPosition(item)
@@ -40,8 +41,9 @@ class SearchFragment : Fragment() {
 
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
         binding.viewPager.searchResultArtist.adapter =
-            PagerArtistFactory(createArtistTestData().map { it }) {
-                // ToDo: 画面遷移の処理をかく
+            PagerArtistFactory(artistList) { artist ->
+                ArtistDetailFragment.newInstance(artist.id, artist.image)
+                    .showFragment(parentFragmentManager)
             }
 
         groupAdapter.update(songList.map {
@@ -80,7 +82,8 @@ class SearchFragment : Fragment() {
             while (j <= 4) {
                 val artist = Artist(
                     name = "Aimyon",
-                    image = R.drawable.kirari
+                    image = R.drawable.aimyon,
+                    id = j.toString()
                 )
                 artistTestData.add(artist)
                 j++
