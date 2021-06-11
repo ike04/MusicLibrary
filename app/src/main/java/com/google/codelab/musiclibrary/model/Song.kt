@@ -1,4 +1,4 @@
-package com.google.codelab.musiclibrary
+package com.google.codelab.musiclibrary.model
 
 data class Song(
     val name: String,

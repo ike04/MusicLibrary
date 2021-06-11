@@ -1,7 +1,7 @@
 package com.google.codelab.musiclibrary.view
 
 import com.google.codelab.musiclibrary.R
-import com.google.codelab.musiclibrary.Song
+import com.google.codelab.musiclibrary.model.Song
 import com.google.codelab.musiclibrary.databinding.CellSearchSongBinding
 import com.xwray.groupie.databinding.BindableItem
 
