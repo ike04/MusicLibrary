@@ -16,10 +16,12 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.navigation_search -> {
                 searchFragment.showFragment(supportFragmentManager)
+                supportActionBar?.hide()
                 true
             }
             R.id.navigation_ranking -> {
                 rankingFragment.showFragment(supportFragmentManager)
+                supportActionBar?.show()
                 true
             }
             else -> false
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         searchFragment.showFragment(supportFragmentManager)
+        supportActionBar?.hide()
 
         binding.navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         setContentView(binding.root)
