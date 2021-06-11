@@ -27,7 +27,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recyclerView.adapter = groupAdapter
+        binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
 
         groupAdapter.update(createTestData().map { SearchItemFactory(it) })
     }
