@@ -2,7 +2,7 @@ package com.google.codelab.musiclibrary.model
 
 data class SearchResponse(
     val tracks: Tracks,
-    val artist: Artists
+    val artists: Artists
 )
 
 // 曲の情報

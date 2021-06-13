@@ -13,11 +13,10 @@ interface ApiRequest {
         "x-rapidapi-key: c2aabedfb3msh84de69484f23decp1cc625jsn8ae661131e47",
         "x-rapidapi-host: shazam.p.rapidapi.com"
     )
-    @GET("{search}")
+    @GET("search")
     fun fetchSearchResult(
-        @Path("search") tagId: String,
         @Query("term") term: String,
         @Query("offset") offset: Int,
         @Query("limit") limit: Int
-    ): Single<Response<List<SearchResponse>>>
+    ): Single<Response<SearchResponse>>
 }
