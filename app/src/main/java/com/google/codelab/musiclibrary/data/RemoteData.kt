@@ -11,6 +11,6 @@ class RemoteData {
     }
 
     companion object {
-        private const val LIMIT = 20
+        private const val LIMIT = 5
     }
 }
