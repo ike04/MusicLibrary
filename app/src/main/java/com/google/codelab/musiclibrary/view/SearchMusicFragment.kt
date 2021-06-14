@@ -9,23 +9,23 @@ import androidx.fragment.app.Fragment
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
-import com.google.codelab.musiclibrary.model.Artist
-import com.google.codelab.musiclibrary.model.Song
+import com.google.codelab.musiclibrary.model.*
 import com.google.codelab.musiclibrary.util.ShareUtils
+import com.google.codelab.musiclibrary.viewmodel.SearchMusicViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.OnItemClickListener
 
-class SearchFragment : Fragment() {
+class SearchMusicFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
+    private lateinit var viewModel: SearchMusicViewModel
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-    private val songList: MutableList<Song> = createSongTestData()
-    private val artistList: MutableList<Artist> = createArtistTestData()
-    private val onItemClickListener = OnItemClickListener { item, _ ->
-        // どのitemがクリックされたかindexを取得
-        val index = groupAdapter.getAdapterPosition(item)
-        DetailWebViewFragment.newInstance(songList[index].url).showFragment(parentFragmentManager)
-    }
+    private val songs:MutableList<Track> = ArrayList()
+    private val artists:MutableList<ArtistsHit> = ArrayList()
+//    private val onItemClickListener = OnItemClickListener { item, _ ->
+//        // どのitemがクリックされたかindexを取得
+//        val index = groupAdapter.getAdapterPosition(item)
+//        DetailWebViewFragment.newInstance(songList[index].url).showFragment(parentFragmentManager)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +33,7 @@ class SearchFragment : Fragment() {
     ): View {
 
         binding = FragmentSearchBinding.inflate(layoutInflater)
+        viewModel = SearchMusicViewModel()
         return binding.root
     }
 
@@ -41,24 +42,33 @@ class SearchFragment : Fragment() {
 
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
         binding.viewPager.searchResultArtist.adapter =
-            PagerArtistFactory(artistList) { artist ->
-                ArtistDetailFragment.newInstance(artist.id, artist.image)
+            PagerArtistFactory(artists, requireContext()) { artist ->
+                ArtistDetailFragment.newInstance(artist.artist.id, artist.artist.avatar)
                     .showFragment(parentFragmentManager)
             }
 
-        groupAdapter.update(songList.map {
-            SearchItemFactory(it) { position ->
-                val sendIntent = ShareUtils.share(songList[position])
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
-            }
+        viewModel.fetchMusic("fujii kaze", 0)
+
+        viewModel.artistlist.observe(viewLifecycleOwner, { artistList: Artists ->
+            artistList.hits.map { artists.add(it) }
+            binding.viewPager.searchResultArtist.adapter?.notifyDataSetChanged()
         })
-        groupAdapter.setOnItemClickListener(onItemClickListener)
+
+        viewModel.songList.observe(viewLifecycleOwner, { musicList: Tracks ->
+            musicList.hits.map { songs.add(it.track) }
+            groupAdapter.update(songs.map { SearchItemFactory(it,requireContext()){ position ->
+                val sendIntent = ShareUtils.share(songs[position])
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
+            } })
+        })
+
+//        groupAdapter.setOnItemClickListener(onItemClickListener)
     }
 
     companion object {
         private val songTestData: MutableList<Song> = ArrayList()
-        private val artistTestData: MutableList<Artist> = ArrayList()
+        
         fun createSongTestData(): MutableList<Song> {
             var i = 0
             songTestData.clear()
@@ -74,21 +84,6 @@ class SearchFragment : Fragment() {
                 i++
             }
             return songTestData
-        }
-
-        fun createArtistTestData(): MutableList<Artist> {
-            var j = 0
-            artistTestData.clear()
-            while (j <= 4) {
-                val artist = Artist(
-                    name = "Aimyon",
-                    image = R.drawable.aimyon,
-                    id = j.toString()
-                )
-                artistTestData.add(artist)
-                j++
-            }
-            return artistTestData
         }
     }
 

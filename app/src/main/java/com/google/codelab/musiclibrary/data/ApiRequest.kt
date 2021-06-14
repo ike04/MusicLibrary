@@ -10,8 +10,9 @@ import retrofit2.http.Query
 
 interface ApiRequest {
     @Headers(
-        "x-rapidapi-key: c2aabedfb3msh84de69484f23decp1cc625jsn8ae661131e47",
-        "x-rapidapi-host: shazam.p.rapidapi.com"
+        "x-rapidapi-key: 1c851106fbmshc520410f772cc30p114f1djsn3912fb178f80",
+        "x-rapidapi-host: shazam.p.rapidapi.com",
+        "useQueryString: true"
     )
     @GET("search")
     fun fetchSearchResult(
