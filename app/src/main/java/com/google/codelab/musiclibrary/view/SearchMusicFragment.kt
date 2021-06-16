@@ -45,8 +45,10 @@ class SearchMusicFragment : Fragment() {
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
         binding.viewPager.searchResultArtist.adapter =
             PagerArtistFactory(artists, requireContext()) { artist ->
-                ArtistDetailFragment.newInstance(artist.artist.id, artist.artist.avatar)
-                    .showFragment(parentFragmentManager)
+                artist.artist.avatar?.let {
+                    ArtistDetailFragment.newInstance(artist.artist.id, it)
+                        .showFragment(parentFragmentManager)
+                }
             }
 
         viewModel.artistlist.observe(viewLifecycleOwner, { artistList: Artists ->

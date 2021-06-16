@@ -13,7 +13,7 @@ class SearchItemFactory(private val song: Track, private val context: Context, p
     override fun getLayout(): Int = R.layout.cell_search_song
 
     override fun bind(viewBinding: CellSearchSongBinding, position: Int) {
-        Glide.with(context).load(song.images.coverart).into(viewBinding.imageView)
+        Glide.with(context).load(song.images?.coverart).into(viewBinding.imageView)
         viewBinding.artistName.text = song.subtitle
         viewBinding.songName.text = song.title
 

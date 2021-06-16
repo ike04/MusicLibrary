@@ -1,6 +1,5 @@
 package com.google.codelab.musiclibrary.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +8,22 @@ import androidx.fragment.app.Fragment
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
-import com.google.codelab.musiclibrary.model.Song
-import com.google.codelab.musiclibrary.util.ShareUtils
+import com.google.codelab.musiclibrary.model.ChartResponse
+import com.google.codelab.musiclibrary.model.ChartTracks
+import com.google.codelab.musiclibrary.viewmodel.RankingViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.OnItemClickListener
 
 class RankingFragment : Fragment() {
     private lateinit var binding: FragmentRankingBinding
+    private lateinit var viewModel: RankingViewModel
+    private val songList: MutableList<ChartTracks> = ArrayList()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-    private val songList: MutableList<Song> = createSongTestData()
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
         val index = groupAdapter.getAdapterPosition(item)
-        DetailWebViewFragment.newInstance(songList[index].url).showFragment(parentFragmentManager)
+        songList[index].url?.let { DetailWebViewFragment.newInstance(it).showFragment(parentFragmentManager) }
     }
 
     override fun onCreateView(
@@ -30,6 +31,7 @@ class RankingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRankingBinding.inflate(layoutInflater)
+        viewModel = RankingViewModel()
 
         requireActivity().setTitle(R.string.navigation_ranking)
         return binding.root
@@ -38,34 +40,24 @@ class RankingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rankingRecyclerView.adapter = groupAdapter
-        groupAdapter.update(songList.map {
-            RankingItemFactory(it) { position ->
-                val sendIntent = ShareUtils.share(songList[position])
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
-            }
-        })
-        groupAdapter.setOnItemClickListener(onItemClickListener)
-    }
-
-    companion object {
-        private val songTestData: MutableList<Song> = ArrayList()
-        fun createSongTestData(): MutableList<Song> {
-            var i = 0
-            songTestData.clear()
-            while (i <= 20) {
-                val song = Song(
-                    rank = i + 1,
-                    name = "kirari",
-                    artist = "Fujii Kaze",
-                    image = R.drawable.kirari,
-                    url = "https://www.shazam.com/track/567600879/kirari"
-                )
-                songTestData.add(song)
-                i++
-            }
-            return songTestData
+        if(songList.isEmpty()) {
+            viewModel.fetchRankingMusic(0)
         }
+
+        binding.rankingRecyclerView.adapter = groupAdapter
+
+        viewModel.songList.observe(viewLifecycleOwner, { songs: List<ChartTracks> ->
+            songs.map { songList.add(it) }
+            groupAdapter.update(songList.mapIndexed { index, chartTracks ->
+                RankingItemFactory(chartTracks, index, requireContext()) { position ->
+//                    val sendIntent = ShareUtils.share(songList[position])
+//                    val shareIntent = Intent.createChooser(sendIntent, null)
+//                    startActivity(shareIntent)
+                }
+            })
+
+        })
+
+        groupAdapter.setOnItemClickListener(onItemClickListener)
     }
 }
