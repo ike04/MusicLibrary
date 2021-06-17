@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
@@ -53,11 +54,13 @@ class SearchMusicFragment : Fragment() {
 
         viewModel.artistlist.observe(viewLifecycleOwner, { artistList: Artists ->
             artistList.hits.map { artists.add(it) }
+            binding.noNetwork = false
             binding.viewPager.searchResultArtist.adapter?.notifyDataSetChanged()
         })
 
         viewModel.songList.observe(viewLifecycleOwner, { musicList: Tracks ->
             musicList.hits.map { songs.add(it.track) }
+            binding.noNetwork = false
             groupAdapter.update(songs.map {
                 SearchItemFactory(it, requireContext()) { position ->
                     val sendIntent = ShareUtils.share(songs[position])
@@ -65,6 +68,21 @@ class SearchMusicFragment : Fragment() {
                     startActivity(shareIntent)
                 }
             })
+        })
+
+        viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
+            Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.retry) {
+                    binding.noNetwork = false
+                    binding.searchBar.query?.let { viewModel.fetchMusic(it.toString(), 0) }
+                }.show()
+            when(failure){
+                FailureType.NetworkError -> {
+                    binding.noNetwork = true
+                }
+                FailureType.NotFoundError ->{}
+                else ->{}
+            }
         })
 
         groupAdapter.setOnItemClickListener(onItemClickListener)

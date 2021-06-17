@@ -3,8 +3,7 @@ package com.google.codelab.musiclibrary.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.codelab.musiclibrary.model.Artists
-import com.google.codelab.musiclibrary.model.Tracks
+import com.google.codelab.musiclibrary.model.*
 import com.google.codelab.musiclibrary.usecase.SearchMusicUseCaseImpl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -14,8 +13,10 @@ class SearchMusicViewModel : ViewModel() {
     private val usecase = SearchMusicUseCaseImpl()
     private val _songList: MutableLiveData<Tracks> = MutableLiveData()
     private val _artistList: MutableLiveData<Artists> = MutableLiveData()
+    private val _errorStream: MutableLiveData<FailureType> = MutableLiveData()
     var songList: LiveData<Tracks> = _songList
     var artistlist: LiveData<Artists> = _artistList
+    var errorStream: LiveData<FailureType> = _errorStream
 
     fun fetchMusic(keyword: String, offset: Int) {
         usecase.fetchMusic(keyword, offset)
@@ -26,7 +27,12 @@ class SearchMusicViewModel : ViewModel() {
                         _songList.postValue(result.tracks)
                         _artistList.postValue(result.artists)
                 },
-                onError = {}
+                onError = {
+                    val f = Failure(getMessage(it)) {
+                        fetchMusic(keyword, offset)
+                    }
+                    _errorStream.postValue(f.message)
+                }
             )
     }
 }

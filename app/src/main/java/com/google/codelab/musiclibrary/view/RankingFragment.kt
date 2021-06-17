@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
 import com.google.codelab.musiclibrary.model.ChartResponse
 import com.google.codelab.musiclibrary.model.ChartTracks
+import com.google.codelab.musiclibrary.model.FailureType
 import com.google.codelab.musiclibrary.viewmodel.RankingViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -56,6 +58,21 @@ class RankingFragment : Fragment() {
                 }
             })
 
+        })
+
+        viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
+            Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.retry) {
+                    binding.noNetwork = false
+                    viewModel.fetchRankingMusic(0)
+                }.show()
+            when(failure){
+                FailureType.NetworkError -> {
+                    binding.noNetwork = true
+                }
+                FailureType.NotFoundError ->{}
+                else ->{}
+            }
         })
 
         groupAdapter.setOnItemClickListener(onItemClickListener)
