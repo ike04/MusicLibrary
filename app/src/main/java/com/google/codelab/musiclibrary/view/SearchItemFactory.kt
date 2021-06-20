@@ -4,7 +4,6 @@ import android.content.Context
 import com.bumptech.glide.Glide
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.CellSearchSongBinding
-import com.google.codelab.musiclibrary.model.Song
 import com.google.codelab.musiclibrary.model.Track
 import com.xwray.groupie.databinding.BindableItem
 

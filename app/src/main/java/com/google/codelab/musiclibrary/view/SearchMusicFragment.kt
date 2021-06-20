@@ -111,7 +111,6 @@ class SearchMusicFragment : Fragment() {
     ) : SearchView.OnQueryTextListener {
         // 文字が入力されたタイミングで実行される
         override fun onQueryTextChange(newText: String?): Boolean {
-//            viewModel.searchArticles(newText)
             return false
         }
 

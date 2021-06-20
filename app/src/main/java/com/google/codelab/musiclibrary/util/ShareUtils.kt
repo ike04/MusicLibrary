@@ -1,9 +1,7 @@
 package com.google.codelab.musiclibrary.util
 
 import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
 import com.google.codelab.musiclibrary.model.ChartTracks
-import com.google.codelab.musiclibrary.model.Song
 import com.google.codelab.musiclibrary.model.Track
 
 object ShareUtils {
