@@ -9,7 +9,7 @@ import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val searchFragment = SearchFragment()
+    private val searchFragment = SearchMusicFragment()
     private val rankingFragment = RankingFragment()
 
     private val onNavigationItemSelectedListener =
