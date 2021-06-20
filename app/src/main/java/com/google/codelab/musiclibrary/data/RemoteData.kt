@@ -1,6 +1,7 @@
 package com.google.codelab.musiclibrary.data
 
 import com.google.codelab.musiclibrary.data.ShazamClient.retrofit
+import com.google.codelab.musiclibrary.model.ArtistTracks
 import com.google.codelab.musiclibrary.model.ChartResponse
 import com.google.codelab.musiclibrary.model.SearchResponse
 import io.reactivex.rxjava3.core.Single
@@ -13,6 +14,10 @@ class RemoteData {
 
     fun fetchChartMusic(startPage: Int): Single<Response<ChartResponse>> {
         return retrofit.create(ApiRequest::class.java).fetchCharts(COUNTRY_KEY, 20, startPage)
+    }
+
+    fun fetchArtistTracks(id: String): Single<Response<ArtistTracks>> {
+        return retrofit.create(ApiRequest::class.java).fetchArtistTracks((id))
     }
 
     companion object {

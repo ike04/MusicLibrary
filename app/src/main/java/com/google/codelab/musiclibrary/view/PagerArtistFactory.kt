@@ -37,7 +37,6 @@ class PagerViewHolder(val binding: CellSearchArtistBinding) :
 
     fun bind(artist: ArtistsHit, context: Context) {
         Glide.with(context).load(artist.artist.avatar).into(binding.pagerArtistImage)
-        binding.pagerArtistImage.setImageResource(R.drawable.aimyon)
         binding.pagerArtistName.text = artist.artist.name
     }
 }
