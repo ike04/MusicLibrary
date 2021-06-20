@@ -21,6 +21,9 @@ import com.xwray.groupie.OnItemClickListener
 class SearchMusicFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var viewModel: SearchMusicViewModel
+
+    private val songs: MutableList<Track> = ArrayList()
+    val artists: MutableList<ArtistsHit> = ArrayList()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
@@ -41,7 +44,11 @@ class SearchMusicFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.searchBar.setOnQueryTextListener(SearchViewListener(viewModel))
+        if (songs.isEmpty()) {
+            binding.startView = true
+        }
+
+        binding.searchBar.setOnQueryTextListener(SearchViewListener(viewModel, binding, songs, artists))
 
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
         binding.viewPager.searchResultArtist.adapter =
@@ -61,6 +68,8 @@ class SearchMusicFragment : Fragment() {
         viewModel.songList.observe(viewLifecycleOwner, { musicList: Tracks ->
             musicList.hits.map { songs.add(it.track) }
             binding.noNetwork = false
+            binding.isLoading = false
+            binding.startView = false
             groupAdapter.update(songs.map {
                 SearchItemFactory(it, requireContext()) { position ->
                     val sendIntent = ShareUtils.share(songs[position])
@@ -74,14 +83,20 @@ class SearchMusicFragment : Fragment() {
             Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.retry) {
                     binding.noNetwork = false
+                    binding.isLoading = true
                     binding.searchBar.query?.let { viewModel.fetchMusic(it.toString(), 0) }
                 }.show()
-            when(failure){
+            when (failure) {
                 FailureType.NetworkError -> {
                     binding.noNetwork = true
+                    binding.isLoading = false
+                    binding.startView = false
                 }
-                FailureType.NotFoundError ->{}
-                else ->{}
+                FailureType.NotFoundError -> {
+                    binding.startView = true
+                }
+                else -> {
+                }
             }
         })
 
@@ -89,7 +104,10 @@ class SearchMusicFragment : Fragment() {
     }
 
     class SearchViewListener(
-        private val viewModel: SearchMusicViewModel
+        private val viewModel: SearchMusicViewModel,
+        private val binding: FragmentSearchBinding,
+        private val songs: MutableList<Track>,
+        private val artists: MutableList<ArtistsHit>
     ) : SearchView.OnQueryTextListener {
         // 文字が入力されたタイミングで実行される
         override fun onQueryTextChange(newText: String?): Boolean {
@@ -102,32 +120,8 @@ class SearchMusicFragment : Fragment() {
             songs.clear()
             artists.clear()
             query?.let { viewModel.fetchMusic(it, 0) }
+            binding.isLoading = true
             return false
         }
     }
-
-
-    companion object {
-        val songs: MutableList<Track> = ArrayList()
-        val artists: MutableList<ArtistsHit> = ArrayList()
-        private val songTestData: MutableList<Song> = ArrayList()
-
-        fun createSongTestData(): MutableList<Song> {
-            var i = 0
-            songTestData.clear()
-            while (i <= 20) {
-                val song = Song(
-                    rank = null,
-                    name = "kirari",
-                    artist = "Fujii Kaze",
-                    image = R.drawable.kirari,
-                    url = "https://www.shazam.com/track/567600879/kirari"
-                )
-                songTestData.add(song)
-                i++
-            }
-            return songTestData
-        }
-    }
-
 }

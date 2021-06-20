@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
+import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentArtistDetailBinding
+import com.google.codelab.musiclibrary.model.FailureType
 import com.google.codelab.musiclibrary.model.TopTrack
 import com.google.codelab.musiclibrary.viewmodel.ArtistDetailViewModel
 import com.xwray.groupie.GroupAdapter
@@ -51,6 +54,7 @@ class ArtistDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.isLoading = true
         Glide.with(requireContext()).load(image).into(binding.artistImage)
 
         viewModel.fetchArtistTracks(artistId)
@@ -60,6 +64,15 @@ class ArtistDetailFragment : Fragment() {
         viewModel.artistTracks.observe(viewLifecycleOwner, { topSongs ->
             topSongs.tracks.map { songList.add(it) }
             groupAdapter.update(songList.map { ArtistDetailItemFactory(it, requireContext()) {} })
+            binding.isLoading = false
+        })
+
+        viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
+            Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.retry) {
+                    viewModel.fetchArtistTracks(artistId)
+                }.show()
+            binding.isLoading = false
         })
     }
 }

@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +10,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
-import com.google.codelab.musiclibrary.model.ChartResponse
 import com.google.codelab.musiclibrary.model.ChartTracks
 import com.google.codelab.musiclibrary.model.FailureType
+import com.google.codelab.musiclibrary.util.ShareUtils
 import com.google.codelab.musiclibrary.viewmodel.RankingViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -25,7 +26,9 @@ class RankingFragment : Fragment() {
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
         val index = groupAdapter.getAdapterPosition(item)
-        songList[index].url?.let { DetailWebViewFragment.newInstance(it).showFragment(parentFragmentManager) }
+        songList[index].url?.let {
+            DetailWebViewFragment.newInstance(it).showFragment(parentFragmentManager)
+        }
     }
 
     override fun onCreateView(
@@ -42,8 +45,9 @@ class RankingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(songList.isEmpty()) {
+        if (songList.isEmpty()) {
             viewModel.fetchRankingMusic(0)
+            binding.isLoading = true
         }
 
         binding.rankingRecyclerView.adapter = groupAdapter
@@ -52,26 +56,27 @@ class RankingFragment : Fragment() {
             songs.map { songList.add(it) }
             groupAdapter.update(songList.mapIndexed { index, chartTracks ->
                 RankingItemFactory(chartTracks, index, requireContext()) { position ->
-//                    val sendIntent = ShareUtils.share(songList[position])
-//                    val shareIntent = Intent.createChooser(sendIntent, null)
-//                    startActivity(shareIntent)
+                    val sendIntent = ShareUtils.shareRanking(songList[position])
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
                 }
             })
-
+            binding.isLoading = false
         })
 
         viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
             Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.retry) {
                     binding.noNetwork = false
+                    binding.isLoading = false
                     viewModel.fetchRankingMusic(0)
                 }.show()
-            when(failure){
+            when (failure) {
                 FailureType.NetworkError -> {
                     binding.noNetwork = true
                 }
-                FailureType.NotFoundError ->{}
-                else ->{}
+                else -> {
+                }
             }
         })
 

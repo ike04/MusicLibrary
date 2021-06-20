@@ -3,9 +3,7 @@ package com.google.codelab.musiclibrary.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.codelab.musiclibrary.model.ArtistTracks
-import com.google.codelab.musiclibrary.model.FailureType
-import com.google.codelab.musiclibrary.model.Track
+import com.google.codelab.musiclibrary.model.*
 import com.google.codelab.musiclibrary.usecase.ArtistDetailUseCaseImpl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -26,7 +24,12 @@ class ArtistDetailViewModel : ViewModel() {
                 onSuccess = {
                     _artistSongs.postValue(it)
                 },
-                onError = {}
+                onError = {
+                    val f = Failure(getMessage(it)) {
+                        fetchArtistTracks(id)
+                    }
+                    _errorStream.postValue(f.message)
+                }
             )
     }
 }
