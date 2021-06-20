@@ -74,6 +74,7 @@ class RankingFragment : Fragment() {
             when (failure) {
                 FailureType.NetworkError -> {
                     binding.noNetwork = true
+                    binding.isLoading = false
                 }
                 else -> {
                 }

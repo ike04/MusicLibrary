@@ -44,11 +44,16 @@ class SearchMusicFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (songs.isEmpty()) {
-            binding.startView = true
-        }
+        binding.startView = songs.isEmpty()
 
-        binding.searchBar.setOnQueryTextListener(SearchViewListener(viewModel, binding, songs, artists))
+        binding.searchBar.setOnQueryTextListener(
+            SearchViewListener(
+                viewModel,
+                binding,
+                songs,
+                artists
+            )
+        )
 
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
         binding.viewPager.searchResultArtist.adapter =
