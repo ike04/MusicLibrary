@@ -65,16 +65,15 @@ class RankingFragment : Fragment() {
         })
 
         viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
+            binding.isLoading = false
             Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.retry) {
                     binding.noNetwork = false
-                    binding.isLoading = false
                     viewModel.fetchRankingMusic(0)
                 }.show()
             when (failure) {
                 FailureType.NetworkError -> {
                     binding.noNetwork = true
-                    binding.isLoading = false
                 }
                 else -> {
                 }
