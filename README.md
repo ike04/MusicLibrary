@@ -14,6 +14,7 @@ Shazam API( https://api.rakuten.net/apidojo/api/shazam )を用いた音楽検索
 - glide
 - RxJava3
 - groupie
+- Hilt
 
 ## スクリーンショット
 ### 検索画面 (GET/search, GET/songs/list-artist-top-tracks)
