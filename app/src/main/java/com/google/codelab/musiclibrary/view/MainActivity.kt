@@ -6,7 +6,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.ActivityMainBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val searchFragment = SearchMusicFragment()

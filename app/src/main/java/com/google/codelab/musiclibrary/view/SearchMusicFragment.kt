@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
@@ -17,10 +18,12 @@ import com.google.codelab.musiclibrary.viewmodel.SearchMusicViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.OnItemClickListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchMusicFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var viewModel: SearchMusicViewModel
+    private val viewModel: SearchMusicViewModel by viewModels()
 
     private val songs: MutableList<Track> = ArrayList()
     val artists: MutableList<ArtistsHit> = ArrayList()
@@ -37,7 +40,6 @@ class SearchMusicFragment : Fragment() {
     ): View {
 
         binding = FragmentSearchBinding.inflate(layoutInflater)
-        viewModel = SearchMusicViewModel()
         return binding.root
     }
 
