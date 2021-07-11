@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
@@ -17,10 +18,12 @@ import com.google.codelab.musiclibrary.viewmodel.RankingViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.OnItemClickListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RankingFragment : Fragment() {
     private lateinit var binding: FragmentRankingBinding
-    private lateinit var viewModel: RankingViewModel
+    private val viewModel: RankingViewModel by viewModels()
     private val songList: MutableList<ChartTracks> = ArrayList()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val onItemClickListener = OnItemClickListener { item, _ ->
@@ -36,7 +39,6 @@ class RankingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRankingBinding.inflate(layoutInflater)
-        viewModel = RankingViewModel()
 
         requireActivity().setTitle(R.string.navigation_ranking)
         return binding.root

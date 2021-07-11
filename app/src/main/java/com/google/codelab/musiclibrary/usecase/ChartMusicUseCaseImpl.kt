@@ -1,14 +1,14 @@
 package com.google.codelab.musiclibrary.usecase
 
 import com.google.codelab.musiclibrary.model.ChartResponse
-import com.google.codelab.musiclibrary.repository.ChartMusicRepositoryImpl
+import com.google.codelab.musiclibrary.repository.ChartMusicRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class ChartMusicUseCaseImpl: ChartMusicUseCase {
-    private val repository = ChartMusicRepositoryImpl()
-
+class ChartMusicUseCaseImpl @Inject constructor(private val repository: ChartMusicRepository) :
+    ChartMusicUseCase {
     override fun fetchChartMusic(startPage: Int): Single<ChartResponse> {
         return repository.fetchChartMusic(startPage)
             .subscribeOn(Schedulers.io())

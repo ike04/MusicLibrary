@@ -9,15 +9,17 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentArtistDetailBinding
-import com.google.codelab.musiclibrary.model.FailureType
+import androidx.fragment.app.viewModels
 import com.google.codelab.musiclibrary.model.TopTrack
 import com.google.codelab.musiclibrary.viewmodel.ArtistDetailViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ArtistDetailFragment : Fragment() {
     private lateinit var binding: FragmentArtistDetailBinding
-    private lateinit var viewModel: ArtistDetailViewModel
+    private val viewModel: ArtistDetailViewModel by viewModels()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val songList: MutableList<TopTrack> = ArrayList()
     private val artistId: String
@@ -42,7 +44,6 @@ class ArtistDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentArtistDetailBinding.inflate(layoutInflater)
-        viewModel = ArtistDetailViewModel()
     }
 
     override fun onCreateView(

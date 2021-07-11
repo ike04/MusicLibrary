@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.codelab.musiclibrary.databinding.FragmentDetailWebViewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailWebViewFragment : Fragment() {
     private lateinit var binding: FragmentDetailWebViewBinding
     private val url: String
