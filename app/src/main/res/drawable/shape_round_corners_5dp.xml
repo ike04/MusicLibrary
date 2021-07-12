@@ -8,9 +8,6 @@
                 android:bottomLeftRadius="5dp"
                 android:topLeftRadius="5dp"
                 />
-            <solid
-                android:color="@color/button_material_light"
-                />
         </shape>
     </item>
 </selector>

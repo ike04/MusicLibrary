@@ -57,7 +57,7 @@ class RankingFragment : Fragment() {
         viewModel.songList.observe(viewLifecycleOwner, { songs: List<ChartTracks> ->
             songs.map { songList.add(it) }
             groupAdapter.update(songList.mapIndexed { index, chartTracks ->
-                RankingItemFactory(chartTracks, index, requireContext()) { position ->
+                RankingItemFactory(chartTracks, index) { position ->
                     val sendIntent = ShareUtils.shareRanking(songList[position])
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     startActivity(shareIntent)
