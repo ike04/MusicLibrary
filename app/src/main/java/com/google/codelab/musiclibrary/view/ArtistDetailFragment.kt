@@ -1,16 +1,18 @@
 package com.google.codelab.musiclibrary.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentArtistDetailBinding
-import androidx.fragment.app.viewModels
-import com.google.codelab.musiclibrary.model.TopTrack
+import com.google.codelab.musiclibrary.model.businessmodel.Tracks
+import com.google.codelab.musiclibrary.util.ShareUtils
 import com.google.codelab.musiclibrary.viewmodel.ArtistDetailViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -21,7 +23,7 @@ class ArtistDetailFragment : Fragment() {
     private lateinit var binding: FragmentArtistDetailBinding
     private val viewModel: ArtistDetailViewModel by viewModels()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-    private val songList: MutableList<TopTrack> = ArrayList()
+    private val songList: MutableList<Tracks> = ArrayList()
     private val artistId: String
         get() = checkNotNull(arguments?.getString(ARTIST_ID))
 
@@ -63,8 +65,14 @@ class ArtistDetailFragment : Fragment() {
         binding.artistSongRecyclerView.adapter = groupAdapter
 
         viewModel.artistTracks.observe(viewLifecycleOwner, { topSongs ->
-            topSongs.tracks.map { songList.add(it) }
-            groupAdapter.update(songList.map { ArtistDetailItemFactory(it, requireContext()) {} })
+            topSongs.map { songList.add(it) }
+            groupAdapter.update(songList.map {
+                ArtistDetailItemFactory(it, requireContext()) { position ->
+                    val sendIntent = ShareUtils.share(songList[position])
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
+                }
+            })
             binding.isLoading = false
         })
 

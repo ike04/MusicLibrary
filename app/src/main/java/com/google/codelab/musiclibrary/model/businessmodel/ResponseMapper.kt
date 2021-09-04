@@ -1,10 +1,11 @@
 package com.google.codelab.musiclibrary.model.businessmodel
 
+import com.google.codelab.musiclibrary.model.ArtistTracks
 import com.google.codelab.musiclibrary.model.ChartResponse
 import com.google.codelab.musiclibrary.model.SearchResponse
 import retrofit2.Response
 
-class ChartMapper {
+class ResponseMapper {
     companion object {
         fun transform(response: Response<ChartResponse>): List<Tracks> {
             return response.body()?.tracks?.let {
@@ -47,6 +48,19 @@ class ChartMapper {
                     name = it.artist.name
                 )
             }
+        }
+
+        fun artistDetailTransform(response: Response<ArtistTracks>): List<Tracks> {
+            return response.body()?.tracks?.let {
+                it.map {
+                    Tracks(
+                        title = it.title,
+                        subtitle = it.subtitle,
+                        images = it.images?.coverart,
+                        url = it.url
+                    )
+                }
+            } ?: emptyList()
         }
     }
 }
