@@ -6,10 +6,10 @@ import retrofit2.Response
 
 class ChartMapper {
     companion object {
-        fun transform(response: Response<ChartResponse>): List<ChartBusinessModel> {
+        fun transform(response: Response<ChartResponse>): List<Tracks> {
             return response.body()?.tracks?.let {
                 it.map { song ->
-                    ChartBusinessModel(
+                    Tracks(
                         title = song.title,
                         subtitle = song.subtitle,
                         images = song.images?.coverart,
