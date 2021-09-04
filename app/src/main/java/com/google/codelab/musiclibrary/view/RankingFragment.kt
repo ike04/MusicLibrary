@@ -47,10 +47,7 @@ class RankingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (songList.isEmpty()) {
-            viewModel.fetchRankingMusic(0)
-            binding.isLoading = true
-        }
+        viewModel.fetchRankingMusic(0)
 
         binding.rankingRecyclerView.adapter = groupAdapter
 
@@ -63,11 +60,9 @@ class RankingFragment : Fragment() {
                     startActivity(shareIntent)
                 }
             })
-            binding.isLoading = false
         })
 
         viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
-            binding.isLoading = false
             Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.retry) {
                     binding.noNetwork = false
@@ -83,5 +78,10 @@ class RankingFragment : Fragment() {
         })
 
         groupAdapter.setOnItemClickListener(onItemClickListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        songList.clear()
     }
 }
