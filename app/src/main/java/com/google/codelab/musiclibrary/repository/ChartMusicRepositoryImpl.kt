@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.repository
 
+import android.util.Log
 import com.google.codelab.musiclibrary.App
 import com.google.codelab.musiclibrary.data.RemoteData
 import com.google.codelab.musiclibrary.model.businessmodel.LocalMapper
@@ -19,14 +20,25 @@ class ChartMusicRepositoryImpl @Inject constructor(
     private val dao = App.database.tracksDao()
     private val tracks: PublishSubject<List<Tracks>> = PublishSubject.create()
 
+    companion object {
+        private const val CACHE_AGE = 6 * 60 * 60 * 1000L // 6hours
+    }
+
     override fun fetchChartMusic(startPage: Int){
         Single.fromCallable { dao.loadTracks() }
             .subscribeOn(Schedulers.io())
             .subscribeBy {
                 if (it.isEmpty()) {
                     fetchRemote(startPage)
+                    Log.d("RankingFragment", "キャッシュなし")
                 } else {
-                    fetchLocal()
+                    if (it.first().updatedAt + CACHE_AGE < System.currentTimeMillis()) {
+                        fetchRemote(startPage)
+                        Log.d("RankingFragment", "キャッシュあるが期限切れ")
+                    } else {
+                        fetchLocal()
+                        Log.d("RankingFragment", "キャッシュを利用")
+                    }
                 }
             }
     }
