@@ -41,6 +41,8 @@ class RankingFragment : Fragment() {
         binding = FragmentRankingBinding.inflate(layoutInflater)
 
         requireActivity().setTitle(R.string.navigation_ranking)
+
+        binding.viewModel = viewModel
         return binding.root
     }
 

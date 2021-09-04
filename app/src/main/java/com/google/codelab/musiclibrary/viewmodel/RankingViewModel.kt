@@ -27,18 +27,18 @@ class RankingViewModel @Inject constructor(private val usecase: ChartMusicUseCas
         usecase.fetchChartMusic(startPage)
 
         usecase.getTracksStream()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnComplete { isLoading.set(false) }
+            .doOnSubscribe { isLoading.set(true) }
             .subscribeBy(
                 onNext = { song ->
                     _songList.postValue(song)
+                    isLoading.set(false)
                 },
                 onError = {
                     val f = Failure(getMessage(it)) {
                         fetchRankingMusic(startPage)
                     }
                     _errorStream.postValue(f.message)
+                    isLoading.set(false)
                 }
             )
     }
