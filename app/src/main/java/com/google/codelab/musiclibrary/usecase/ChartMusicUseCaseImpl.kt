@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.usecase
 
+import com.google.codelab.musiclibrary.model.ChartBusinessModel
 import com.google.codelab.musiclibrary.model.ChartResponse
 import com.google.codelab.musiclibrary.repository.ChartMusicRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -9,12 +10,7 @@ import javax.inject.Inject
 
 class ChartMusicUseCaseImpl @Inject constructor(private val repository: ChartMusicRepository) :
     ChartMusicUseCase {
-    override fun fetchChartMusic(startPage: Int): Single<ChartResponse> {
+    override fun fetchChartMusic(startPage: Int): Single<List<ChartBusinessModel>> {
         return repository.fetchChartMusic(startPage)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map {
-                it.body()
-            }
     }
 }

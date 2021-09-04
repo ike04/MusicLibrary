@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.google.codelab.musiclibrary.model.ChartTracks" />
+            type="com.google.codelab.musiclibrary.model.ChartBusinessModel" />
 
     </data>
 
@@ -28,7 +28,7 @@
 
         <ImageView
             android:id="@+id/imageView"
-            app:imageUrl="@{item.images.coverart}"
+            app:imageUrl="@{item.images}"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="16dp"

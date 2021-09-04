@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
+import com.google.codelab.musiclibrary.model.ChartBusinessModel
 import com.google.codelab.musiclibrary.model.ChartTracks
 import com.google.codelab.musiclibrary.model.FailureType
 import com.google.codelab.musiclibrary.util.ShareUtils
@@ -24,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class RankingFragment : Fragment() {
     private lateinit var binding: FragmentRankingBinding
     private val viewModel: RankingViewModel by viewModels()
-    private val songList: MutableList<ChartTracks> = ArrayList()
+    private val songList: MutableList<ChartBusinessModel> = ArrayList()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
@@ -54,7 +55,7 @@ class RankingFragment : Fragment() {
 
         binding.rankingRecyclerView.adapter = groupAdapter
 
-        viewModel.songList.observe(viewLifecycleOwner, { songs: List<ChartTracks> ->
+        viewModel.songList.observe(viewLifecycleOwner, { songs: List<ChartBusinessModel> ->
             songs.map { songList.add(it) }
             groupAdapter.update(songList.mapIndexed { index, chartTracks ->
                 RankingItemFactory(chartTracks, index) { position ->
