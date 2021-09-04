@@ -2,11 +2,11 @@ package com.google.codelab.musiclibrary.view
 
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.CellRankingSongBinding
-import com.google.codelab.musiclibrary.model.ChartTracks
+import com.google.codelab.musiclibrary.model.businessmodel.Tracks
 import com.xwray.groupie.databinding.BindableItem
 
 class RankingItemFactory(
-    private val song: ChartTracks,
+    private val song: Tracks,
     private val rank: Int,
     private val onShareClick: (Int) -> Unit
 ) :

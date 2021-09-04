@@ -13,6 +13,8 @@ import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentSearchBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
 import com.google.codelab.musiclibrary.model.*
+import com.google.codelab.musiclibrary.model.businessmodel.Artists
+import com.google.codelab.musiclibrary.model.businessmodel.Tracks
 import com.google.codelab.musiclibrary.util.ShareUtils
 import com.google.codelab.musiclibrary.viewmodel.SearchMusicViewModel
 import com.xwray.groupie.GroupAdapter
@@ -25,13 +27,13 @@ class SearchMusicFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private val viewModel: SearchMusicViewModel by viewModels()
 
-    private val songs: MutableList<Track> = ArrayList()
-    val artists: MutableList<ArtistsHit> = ArrayList()
+    private val songs: MutableList<Tracks> = ArrayList()
+    val artists: MutableList<Artists> = ArrayList()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val onItemClickListener = OnItemClickListener { item, _ ->
         // どのitemがクリックされたかindexを取得
         val index = groupAdapter.getAdapterPosition(item)
-        DetailWebViewFragment.newInstance(songs[index].url).showFragment(parentFragmentManager)
+        songs[index].url?.let { DetailWebViewFragment.newInstance(it).showFragment(parentFragmentManager) }
     }
 
     override fun onCreateView(
@@ -60,20 +62,20 @@ class SearchMusicFragment : Fragment() {
         binding.recyclerView.searchResultRecyclerView.adapter = groupAdapter
         binding.viewPager.searchResultArtist.adapter =
             PagerArtistFactory(artists) { artist ->
-                artist.artist.avatar?.let {
-                    ArtistDetailFragment.newInstance(artist.artist.id, it)
+                artist.avatar?.let {
+                    ArtistDetailFragment.newInstance(artist.id, it)
                         .showFragment(parentFragmentManager)
                 }
             }
 
-        viewModel.artistlist.observe(viewLifecycleOwner, { artistList: Artists ->
-            artistList.hits.map { artists.add(it) }
+        viewModel.artistlist.observe(viewLifecycleOwner, { artistList: List<Artists> ->
+            artistList.map { artists.add(it) }
             binding.noNetwork = false
             binding.viewPager.searchResultArtist.adapter?.notifyDataSetChanged()
         })
 
-        viewModel.songList.observe(viewLifecycleOwner, { musicList: Tracks ->
-            musicList.hits.map { songs.add(it.track) }
+        viewModel.songList.observe(viewLifecycleOwner, { musicList: List<Tracks> ->
+            musicList.map { songs.add(it) }
             binding.noNetwork = false
             binding.isLoading = false
             binding.startView = false
@@ -113,8 +115,8 @@ class SearchMusicFragment : Fragment() {
     class SearchViewListener(
         private val viewModel: SearchMusicViewModel,
         private val binding: FragmentSearchBinding,
-        private val songs: MutableList<Track>,
-        private val artists: MutableList<ArtistsHit>
+        private val songs: MutableList<Tracks>,
+        private val artists: MutableList<Artists>
     ) : SearchView.OnQueryTextListener {
         // 文字が入力されたタイミングで実行される
         override fun onQueryTextChange(newText: String?): Boolean {

@@ -3,10 +3,8 @@ package com.google.codelab.musiclibrary.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.codelab.musiclibrary.model.ArtistTracks
-import com.google.codelab.musiclibrary.model.Failure
-import com.google.codelab.musiclibrary.model.FailureType
-import com.google.codelab.musiclibrary.model.getMessage
+import com.google.codelab.musiclibrary.model.*
+import com.google.codelab.musiclibrary.model.businessmodel.Tracks
 import com.google.codelab.musiclibrary.usecase.ArtistDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -17,9 +15,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistDetailViewModel @Inject constructor(private val usecase: ArtistDetailUseCase) :
     ViewModel() {
-    private val _artistSongs: MutableLiveData<ArtistTracks> = MutableLiveData()
+    private val _artistSongs: MutableLiveData<List<Tracks>> = MutableLiveData()
     private val _errorStream: MutableLiveData<FailureType> = MutableLiveData()
-    var artistTracks: LiveData<ArtistTracks> = _artistSongs
+    var artistTracks: LiveData<List<Tracks>> = _artistSongs
     var errorStream: LiveData<FailureType> = _errorStream
 
     fun fetchArtistTracks(id: String) {
