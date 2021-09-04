@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.codelab.musiclibrary.databinding.CellSearchArtistBinding
 import com.google.codelab.musiclibrary.model.ArtistsHit
+import com.google.codelab.musiclibrary.model.businessmodel.Artists
 
 class PagerArtistFactory(
-    private val artist: List<ArtistsHit>,
-    private val onCellClick: (ArtistsHit) -> Unit
+    private val artist: List<Artists>,
+    private val onCellClick: (Artists) -> Unit
 ) :
     RecyclerView.Adapter<PagerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
@@ -31,7 +32,7 @@ class PagerArtistFactory(
 class PagerViewHolder(val binding: CellSearchArtistBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(artist: ArtistsHit) {
+    fun bind(artist: Artists) {
         binding.item = artist
     }
 }

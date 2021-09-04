@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.google.codelab.musiclibrary.model.ArtistsHit" />
+            type="com.google.codelab.musiclibrary.model.businessmodel.Artists" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
 
         <ImageView
             android:id="@+id/pager_artist_image"
-            app:imageUrl="@{item.artist.avatar}"
+            app:imageUrl="@{item.avatar}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{item.artist.name}"
+            android:text="@{item.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pager_artist_image"

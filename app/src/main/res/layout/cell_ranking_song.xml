@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.google.codelab.musiclibrary.model.ChartBusinessModel" />
+            type="com.google.codelab.musiclibrary.model.businessmodel.ChartBusinessModel" />
 
     </data>
 

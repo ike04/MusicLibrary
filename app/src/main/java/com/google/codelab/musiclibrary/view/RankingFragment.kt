@@ -11,8 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.FragmentRankingBinding
 import com.google.codelab.musiclibrary.ext.FragmentExt.showFragment
-import com.google.codelab.musiclibrary.model.ChartBusinessModel
-import com.google.codelab.musiclibrary.model.ChartTracks
+import com.google.codelab.musiclibrary.model.businessmodel.ChartBusinessModel
 import com.google.codelab.musiclibrary.model.FailureType
 import com.google.codelab.musiclibrary.util.ShareUtils
 import com.google.codelab.musiclibrary.viewmodel.RankingViewModel

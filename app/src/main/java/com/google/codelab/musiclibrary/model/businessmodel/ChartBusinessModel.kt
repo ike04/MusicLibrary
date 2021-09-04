@@ -1,4 +1,4 @@
-package com.google.codelab.musiclibrary.model
+package com.google.codelab.musiclibrary.model.businessmodel
 
 data class ChartBusinessModel(
     val title: String?,

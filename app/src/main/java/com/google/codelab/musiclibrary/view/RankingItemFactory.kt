@@ -2,8 +2,7 @@ package com.google.codelab.musiclibrary.view
 
 import com.google.codelab.musiclibrary.R
 import com.google.codelab.musiclibrary.databinding.CellRankingSongBinding
-import com.google.codelab.musiclibrary.model.ChartBusinessModel
-import com.google.codelab.musiclibrary.model.ChartTracks
+import com.google.codelab.musiclibrary.model.businessmodel.ChartBusinessModel
 import com.xwray.groupie.databinding.BindableItem
 
 class RankingItemFactory(

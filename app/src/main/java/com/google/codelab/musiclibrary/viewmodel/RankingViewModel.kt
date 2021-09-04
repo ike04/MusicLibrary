@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.codelab.musiclibrary.model.*
+import com.google.codelab.musiclibrary.model.businessmodel.ChartBusinessModel
 import com.google.codelab.musiclibrary.usecase.ChartMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
