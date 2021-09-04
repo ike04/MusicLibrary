@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.data
 
+import com.google.codelab.musiclibrary.BuildConfig
 import com.google.codelab.musiclibrary.model.ArtistTracks
 import com.google.codelab.musiclibrary.model.ChartResponse
 import com.google.codelab.musiclibrary.model.SearchResponse
@@ -12,7 +13,7 @@ import retrofit2.http.Query
 
 interface ApiRequest {
     @Headers(
-        "x-rapidapi-key: 1c851106fbmshc520410f772cc30p114f1djsn3912fb178f80",
+        BuildConfig.API_KEY,
         "x-rapidapi-host: shazam.p.rapidapi.com",
         "useQueryString: true"
     )
@@ -24,7 +25,7 @@ interface ApiRequest {
     ): Single<Response<SearchResponse>>
 
     @Headers(
-        "x-rapidapi-key: 1c851106fbmshc520410f772cc30p114f1djsn3912fb178f80",
+        BuildConfig.API_KEY,
         "x-rapidapi-host: shazam.p.rapidapi.com",
         "useQueryString: true"
     )
@@ -36,7 +37,7 @@ interface ApiRequest {
     ): Single<Response<ChartResponse>>
 
     @Headers(
-        "x-rapidapi-key: 1c851106fbmshc520410f772cc30p114f1djsn3912fb178f80",
+        BuildConfig.API_KEY,
         "x-rapidapi-host: shazam.p.rapidapi.com",
         "useQueryString: true"
     )
