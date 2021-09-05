@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.viewmodel
 
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,20 +21,24 @@ class RankingViewModel @Inject constructor(private val usecase: ChartMusicUseCas
     private val _errorStream: MutableLiveData<FailureType> = MutableLiveData()
     var songList: LiveData<List<Tracks>> = _songList
     var errorStream: LiveData<FailureType> = _errorStream
+    val isLoading = ObservableBoolean(true)
 
     fun fetchRankingMusic(startPage: Int) {
         usecase.fetchChartMusic(startPage)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+
+        usecase.getTracksStream()
+            .doOnSubscribe { isLoading.set(true) }
             .subscribeBy(
-                onSuccess = { song ->
+                onNext = { song ->
                     _songList.postValue(song)
+                    isLoading.set(false)
                 },
                 onError = {
                     val f = Failure(getMessage(it)) {
                         fetchRankingMusic(startPage)
                     }
                     _errorStream.postValue(f.message)
+                    isLoading.set(false)
                 }
             )
     }
