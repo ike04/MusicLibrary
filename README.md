@@ -3,7 +3,7 @@ Shazam API( https://api.rakuten.net/apidojo/api/shazam )を用いた音楽検索
 
 ## 機能
 - キーワード検索（APIの仕様上、一度に5件しか取れなかった。。）
-- ランキング機能
+- ランキング機能（6時間の期限付きキャッシュ機能あり）
 
 ## 使用技術
 - Kotlin
@@ -11,6 +11,7 @@ Shazam API( https://api.rakuten.net/apidojo/api/shazam )を用いた音楽検索
 - retrofit
 - okhttp
 - moshi
+- room
 - glide
 - RxJava3
 - groupie
