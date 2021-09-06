@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.usecase
 
+import com.google.codelab.musiclibrary.model.Failure
 import com.google.codelab.musiclibrary.model.businessmodel.Tracks
 import com.google.codelab.musiclibrary.repository.ChartMusicRepository
 import io.reactivex.rxjava3.core.Observable
@@ -13,4 +14,5 @@ class ChartMusicUseCaseImpl @Inject constructor(private val repository: ChartMus
     }
 
     override fun getTracksStream(): Observable<List<Tracks>> = repository.getTracksStream()
+    override fun getErrorStream(): Observable<Failure> = repository.getErrorStream()
 }

@@ -3,9 +3,11 @@ package com.google.codelab.musiclibrary.repository
 import android.util.Log
 import com.google.codelab.musiclibrary.App
 import com.google.codelab.musiclibrary.data.RemoteData
+import com.google.codelab.musiclibrary.model.Failure
 import com.google.codelab.musiclibrary.model.businessmodel.LocalMapper
 import com.google.codelab.musiclibrary.model.businessmodel.ResponseMapper
 import com.google.codelab.musiclibrary.model.businessmodel.Tracks
+import com.google.codelab.musiclibrary.model.getMessage
 import com.google.codelab.musiclibrary.model.local.TracksEntity
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
@@ -19,6 +21,7 @@ class ChartMusicRepositoryImpl @Inject constructor(
 ) : ChartMusicRepository {
     private val dao = App.database.tracksDao()
     private val tracks: PublishSubject<List<Tracks>> = PublishSubject.create()
+    private val errorStream: PublishSubject<Failure> = PublishSubject.create()
 
     companion object {
         private const val CACHE_AGE = 6 * 60 * 60 * 1000L // 6hours
@@ -44,24 +47,33 @@ class ChartMusicRepositoryImpl @Inject constructor(
     }
 
     override fun getTracksStream(): Observable<List<Tracks>> = tracks.hide()
+    override fun getErrorStream(): Observable<Failure> = errorStream.hide()
 
     private fun fetchRemote(startPage: Int) {
         remote.fetchChartMusic(startPage)
             .map { ResponseMapper.transform(it) }
-            .subscribeBy {
-                tracks.onNext(it)
-                it.mapIndexed { index, tracks ->
-                    dao.saveTracks(
-                        TracksEntity(
-                            id = index,
-                            title = tracks.title,
-                            subtitle = tracks.subtitle,
-                            images = tracks.images,
-                            url = tracks.url
+            .subscribeBy (
+                onSuccess = {
+                    tracks.onNext(it)
+                    it.mapIndexed { index, tracks ->
+                        dao.saveTracks(
+                            TracksEntity(
+                                id = index,
+                                title = tracks.title,
+                                subtitle = tracks.subtitle,
+                                images = tracks.images,
+                                url = tracks.url
+                            )
                         )
-                    )
+                    }
+                },
+                onError = {
+                    val f = Failure(getMessage(it)) {
+                        fetchRemote(startPage)
+                    }
+                    errorStream.onNext(f)
                 }
-            }
+            )
     }
 
     private fun fetchLocal() {

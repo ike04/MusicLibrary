@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.viewmodel
 
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,19 +21,24 @@ class ArtistDetailViewModel @Inject constructor(private val usecase: ArtistDetai
     var artistTracks: LiveData<List<Tracks>> = _artistSongs
     var errorStream: LiveData<FailureType> = _errorStream
 
+    val isLoading = ObservableBoolean(false)
+
     fun fetchArtistTracks(id: String) {
         usecase.fetchArtistTracks(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { isLoading.set(true) }
             .subscribeBy(
                 onSuccess = {
                     _artistSongs.postValue(it)
+                    isLoading.set(false)
                 },
                 onError = {
                     val f = Failure(getMessage(it)) {
                         fetchArtistTracks(id)
                     }
                     _errorStream.postValue(f.message)
+                    isLoading.set(false)
                 }
             )
     }

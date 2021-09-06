@@ -57,7 +57,7 @@ class ArtistDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.isLoading = true
+        binding.viewModel = viewModel
         Glide.with(requireContext()).load(image).into(binding.artistImage)
 
         viewModel.fetchArtistTracks(artistId)
@@ -73,7 +73,6 @@ class ArtistDetailFragment : Fragment() {
                     startActivity(shareIntent)
                 }
             })
-            binding.isLoading = false
         })
 
         viewModel.errorStream.observe(viewLifecycleOwner, { failure ->
@@ -81,7 +80,6 @@ class ArtistDetailFragment : Fragment() {
                 .setAction(R.string.retry) {
                     viewModel.fetchArtistTracks(artistId)
                 }.show()
-            binding.isLoading = false
         })
     }
 }

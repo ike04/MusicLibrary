@@ -13,12 +13,8 @@
             type="Boolean" />
 
         <variable
-            name="isLoading"
-            type="Boolean" />
-
-        <variable
-            name="startView"
-            type="Boolean" />
+            name="viewModel"
+            type="com.google.codelab.musiclibrary.viewmodel.SearchMusicViewModel" />
 
     </data>
 
@@ -86,7 +82,7 @@
             android:id="@+id/loading_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{isLoading ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +95,7 @@
             android:id="@+id/searching_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{startView ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.showEmptyImage ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +112,7 @@
             android:gravity="center_horizontal"
             android:text="聴きたい曲を入力してください"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:visibility="@{startView ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.showEmptyImage ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searching_image" />

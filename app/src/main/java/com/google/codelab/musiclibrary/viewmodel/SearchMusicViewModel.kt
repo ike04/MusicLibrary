@@ -1,5 +1,6 @@
 package com.google.codelab.musiclibrary.viewmodel
 
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,8 +17,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchMusicViewModel @Inject constructor(private val usecase: SearchMusicUseCase) :
-    ViewModel() {
+class SearchMusicViewModel @Inject constructor(
+    private val usecase: SearchMusicUseCase
+) : ViewModel() {
     private val _songList: MutableLiveData<List<Tracks>> = MutableLiveData()
     private val _artistList: MutableLiveData<List<Artists>> = MutableLiveData()
     private val _errorStream: MutableLiveData<FailureType> = MutableLiveData()
@@ -25,20 +27,28 @@ class SearchMusicViewModel @Inject constructor(private val usecase: SearchMusicU
     var artistlist: LiveData<List<Artists>> = _artistList
     var errorStream: LiveData<FailureType> = _errorStream
 
+    val showEmptyImage = ObservableBoolean(true)
+    val isLoading = ObservableBoolean(false)
+
     fun fetchMusic(keyword: String, offset: Int) {
         usecase.fetchMusic(keyword, offset)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { isLoading.set(true) }
             .subscribeBy(
                 onSuccess = { result ->
+                    showEmptyImage.set(result.tracks.isEmpty() && result.artists.isEmpty())
+
                     _songList.postValue(result.tracks)
                     _artistList.postValue(result.artists)
+                    isLoading.set(false)
                 },
                 onError = {
                     val f = Failure(getMessage(it)) {
                         fetchMusic(keyword, offset)
                     }
                     _errorStream.postValue(f.message)
+                    isLoading.set(false)
                 }
             )
     }

@@ -42,13 +42,12 @@ class SearchMusicFragment : Fragment() {
     ): View {
 
         binding = FragmentSearchBinding.inflate(layoutInflater)
+        binding.viewModel = viewModel
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.startView = songs.isEmpty()
 
         binding.searchBar.setOnQueryTextListener(
             SearchViewListener(
@@ -77,8 +76,6 @@ class SearchMusicFragment : Fragment() {
         viewModel.songList.observe(viewLifecycleOwner, { musicList: List<Tracks> ->
             musicList.map { songs.add(it) }
             binding.noNetwork = false
-            binding.isLoading = false
-            binding.startView = false
             groupAdapter.update(songs.map {
                 SearchItemFactory(it, requireContext()) { position ->
                     val sendIntent = ShareUtils.share(songs[position])
@@ -92,17 +89,11 @@ class SearchMusicFragment : Fragment() {
             Snackbar.make(view, failure.message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.retry) {
                     binding.noNetwork = false
-                    binding.isLoading = true
                     binding.searchBar.query?.let { viewModel.fetchMusic(it.toString(), 0) }
                 }.show()
             when (failure) {
                 FailureType.NetworkError -> {
                     binding.noNetwork = true
-                    binding.isLoading = false
-                    binding.startView = false
-                }
-                FailureType.NotFoundError -> {
-                    binding.startView = true
                 }
                 else -> {
                 }
@@ -128,7 +119,6 @@ class SearchMusicFragment : Fragment() {
             songs.clear()
             artists.clear()
             query?.let { viewModel.fetchMusic(it, 0) }
-            binding.isLoading = true
             return false
         }
     }

@@ -41,5 +41,11 @@ class RankingViewModel @Inject constructor(private val usecase: ChartMusicUseCas
                     isLoading.set(false)
                 }
             )
+
+        usecase.getErrorStream()
+            .subscribeBy {
+                _errorStream.postValue(it.message)
+                isLoading.set(false)
+            }
     }
 }
